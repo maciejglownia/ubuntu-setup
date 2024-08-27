@@ -129,7 +129,12 @@ sudo apt install pandoc -y
 log "pandoc installed successfully."
 
 #install google chrome
-sudo apt install gh
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+sudo apt --fix-broken install
+#create a desktop shortcut
+#cd /usr/share/applications/
+#cp google-chrome.desktop ~/Desktop/
 log "google chrome installed successfully."
 
 #install sublime text
@@ -160,6 +165,21 @@ log "flameshot installed successfully."
 
 #install freefilesync
 wget https://freefilesync.org/download/FreeFileSync_13.2_Linux.tar.gz
-tar -xvf FreeFileSync_13.2_Linux.tar.gz
-sudo ./FreeFileSync_13.2_Install.run
+tar -xvf FreeFileSync_13.7_Linux.tar.gz
+sudo ./FreeFileSync_13.7_Install.run
 log "freefilesync installed successfully."
+
+#install bat (better cat)
+sudo apt install bat
+log "bat installed successfully."
+#the executable may be installed as batcat instead of bat (due to a name clash with another package)
+mkdir -p ~/.local/bin
+ln -s /usr/bin/batcat ~/.local/bin/bat
+log "bat installed successfully."
+
+#install thefuck - app that corrects errors in previous console commands
+#https://github.com/nvbn/thefuck
+sudo apt update
+sudo apt install python3-dev python3-pip python3-setuptools
+pip3 install thefuck --user
+log "thefuck installed successfully."
