@@ -183,3 +183,8 @@ sudo apt update
 sudo apt install python3-dev python3-pip python3-setuptools
 pip3 install thefuck --user
 log "thefuck installed successfully."
+
+#set git config
+git config --global user.email "maciej.k.glownia@gmail.com"
+git config --global user.name "Maciej Głownia"
+log "user email and name has been set in .gitconfig."
