@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Define the path to the IntelliJ IDEA Ultimate installation
+INTELLIJ_PATH="/opt/idea-ultimate/bin"
+
+# Check if a project name was provided
+if [ "$#" -eq 1 ]; then
+    PROJECT_PATH="$1"
+    # Check if the project directory exists
+    if [ -d "$PROJECT_PATH" ]; then
+        # Notify which project is being opened
+        echo "Opening project: $PROJECT_PATH"
+        # Run IntelliJ IDEA Ultimate and open the specific project
+        nohup "$INTELLIJ_PATH/idea.sh" "$PROJECT_PATH" &
+        sleep 1
+        rm -f nohup.out
+        echo "> nohup.out < file has been removed"
+    else
+        echo "Error: Project directory '$PROJECT_PATH' does not exist."
+        exit 1
+    fi
+else
+    # Notify that IntelliJ is starting without opening a specific project
+    echo "Starting IntelliJ IDEA without opening a specific project."
+    # Run IntelliJ IDEA Ultimate without opening a specific project
+    nohup "$INTELLIJ_PATH/idea.sh" &
+    sleep 1
+    rm -f nohup.out
+    echo "> nohup.out < file has been removed"
+fi
+
+# Close the terminal
+exit

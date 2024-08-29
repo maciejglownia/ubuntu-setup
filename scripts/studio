@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Go to intellij ultimate runner script location
+#cd /opt/android-studio/bin
+#sleep 1
+# Run android studio and do not show logs in the terminal (asume config in .zshrc is done)
+nohup studio.sh & 
+
+# Close the terminal
+exit

@@ -1,0 +1,4 @@
+cat ./bin/cleanPort
+#!/bin/bash
+echo -e "cleaning port '$1'"
+sudo fuser -k "$1"/tcp

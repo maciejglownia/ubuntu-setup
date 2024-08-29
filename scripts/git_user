@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# script to update .gitconfig file
+update_gitconfig() {
+    local email="$1"
+    local name="$2"
+
+    # Replace email and name in .gitconfig
+    sed -i "s/email = .*/email = $email/" ~/.gitconfig
+    sed -i "s/name = .*/name = $name/" ~/.gitconfig
+}
+
+# Function to display .gitconfig dile
+display_gitconfig_file_content() {
+    echo ------------------------------------------------------------
+    echo "| .gitconfig file has been modified to the following data: |"
+    echo ------------------------------------------------------------ 
+    head -n 5 ~/.gitconfig | bat -n
+}
+
+# Main script
+main() {
+    echo "On which GitHub account do you want to push changes?"
+    echo "1 - user1"
+    echo "2 - user2"
+    read -r number
+
+    if [ "$number" = 1 ]; then
+        EMAIL="email1@gxxx.com"
+        NAME="name1"
+    elif [ "$number" = 2 ]; then
+        EMAIL="email2@xxx.com"
+        NAME="name2"
+    else
+        echo "Wrong choice"
+        exit 1
+    fi
+
+
+    update_gitconfig "$EMAIL" "$NAME"
+
+    display_gitconfig_file_content
+}
+
+# Execute main script
+main

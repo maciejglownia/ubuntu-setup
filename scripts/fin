@@ -1,0 +1,182 @@
+#!/bin/bash
+
+# Function to display usage information
+usage() {
+    echo "Usage: $0 <name_pattern> [-f|-d|-*] [max_depth] [-l|-u] [--extension <extension>]"
+    echo "  -f: Search for files (default)"
+    echo "  -d: Search for directories"
+    echo "  -*: Search for both files and directories"
+    echo "  max_depth: Limit the search to a maximum depth (1-9999, default is no limit)"
+    echo "  -l: Search for lower case only"
+    echo "  -u: Search for upper case only"
+    echo "  --extension <extension>: Search for files with a specific extension"
+    echo "  Default behavior is to search for files with no depth limit and case-insensitive"
+    echo "Example pattern: finder pattern [-f|-d|-*] [max_depth] [-l|-u] [--extension <extension>]"
+    exit 1
+}
+
+# Default values
+search_type="-type f"
+search_type_desc="file"
+max_depth=9999 # A very high default value for maximum depth
+case_flag=""
+case_desc="no matter"
+pattern="*$1*"
+extension=""
+
+# Check if the script is called with arguments
+if [ $# -lt 1 ]; then
+    usage
+fi
+
+# Shift arguments to process the rest
+shift
+
+while (( "$#" )); do
+    case "$1" in
+        -f|-d|\*)
+            if [ "$1" = "-f" ]; then
+                search_type="-type f"
+                search_type_desc="file"
+            elif [ "$1" = "-d" ]; then
+                search_type="-type d"
+                search_type_desc="directory"
+            else
+                search_type=""
+                search_type_desc="file & directory"
+            fi
+            shift
+            ;;
+        -l|-u)
+            case_flag="$1"
+            case_desc="$([ "$case_flag" = "-l" ] && echo "lower case only" || echo "upper case only")"
+            shift
+            ;;
+        --extension)
+            if [ $# -lt 2 ]; then
+                echo "Extension option requires an argument. Please specify an extension."
+                usage
+            fi
+            extension="$2"
+            shift 2
+            ;;
+        [0-9]*)
+            if [[ "$1" -ge 1 && "$1" -le 9999 ]]; then
+                max_depth=$1
+            else
+                echo "Invalid max_depth. Please specify a value between 1 and 9999."
+                exit 1
+            fi
+            shift
+            ;;
+        -*)
+            echo "Invalid option: $1"
+            usage
+            ;;
+        *)
+            echo "Invalid option: $1"
+            usage
+            ;;
+    esac
+done
+
+# Inform the user about the search process
+echo "Searching for $search_type_desc(s) containing the phrase \"$pattern\" with extension \"$extension\"."
+echo "Search type: $search_type_desc"
+echo "Max depth: $([ $max_depth -eq 9999 ] && echo "no limit" || echo "$max_depth")"
+echo "Case sensitivity: $case_desc"
+echo "Please wait..."
+
+# Modify pattern based on case_flag
+if [ "$case_flag" = "-l" ]; then
+    pattern=$(echo "$pattern" | tr '[:upper:]' '[:lower:]')
+elif [ "$case_flag" = "-u" ]; then
+    pattern=$(echo "$pattern" | tr '[:lower:]' '[:upper:]')
+fi
+
+# Construct the find command
+find_cmd="find . -maxdepth $max_depth $search_type -iname \"$pattern\""
+
+# Add extension filter if provided
+if [ -n "$extension" ]; then
+    find_cmd="$find_cmd -name \"*.$extension\""
+fi
+
+# Execute find command and store results
+results=$(eval $find_cmd)
+
+if [ -z "$results" ]; then
+    echo "No matches found for pattern '$pattern' with extension '$extension'."
+    exit 0
+fi
+
+# Display results with numbers
+counter=1
+declare -A items
+while IFS= read -r line; do
+    items[$counter]="$line"
+    echo "$counter - $line"
+    ((counter++))
+done <<< "$results"
+
+# Prompt user to choose a file or directory
+while true; do
+    echo "Enter the number of the item you want to open or navigate to:"
+    read choice
+
+    selected_item="${items[$choice]}"
+
+    if [ -n "$selected_item" ]; then
+        if [ -f "$selected_item" ]; then
+            echo "Selected item is a file: $selected_item"
+            read -p "Do you want to open it in Sublime Text? (Y/n): " open_file_choice
+            open_file_choice=${open_file_choice:-Y}
+            if [ "$open_file_choice" == "Y" ] || [ "$open_file_choice" == "y" ]; then
+                echo "Opening $selected_item in Sublime Text..."
+                subl "$selected_item"
+            else
+                echo "Navigating to directory of $selected_item..."
+                (cd "$(dirname "$selected_item")" && exec $SHELL)
+            fi
+        elif [ -d "$selected_item" ]; then
+            echo "Selected item is a directory: $selected_item"
+            echo "It is not possible to open a directory in a text editor."
+            while true; do
+                echo "Choose an option:"
+                echo "1. Choose another number"
+                echo "2. Move to the destination"
+                echo "3. Open in IntelliJ IDEA - Community"
+                echo "4. Open in IntelliJ IDEA - Ultimate"
+                echo "0. Exit"
+                read -p "Enter the option number: " option
+                case "$option" in
+                    1)
+                        break ;;
+                    2)
+                        echo "Navigating to directory $selected_item..."
+                        (cd "$selected_item" && exec $SHELL)
+                        ;;
+                    3)
+                        echo "Opening $selected_item in IntelliJ IDEA Community version..."
+                        nohup idea "$selected_item" &>/dev/null &
+                        exit 0 ;;
+                    4)
+                        echo "Opening $selected_item in IntelliJ IDEA Ultimate version..."
+                        ultim "$selected_item" &>/dev/null &
+                        exit 0 ;;
+                    0)
+                        echo "Exiting..."
+                        exit 0 ;;
+                    *)
+                        echo "Invalid option. Please try again." ;;
+                esac
+            done
+        else
+            echo "Invalid choice. Exiting."
+            exit 1
+        fi
+    else
+        echo "Invalid choice. Exiting."
+        exit 1
+    fi
+done
