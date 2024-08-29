@@ -1,0 +1,74 @@
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+*.class
+
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+*.swp
+*.swo
+
+# Maven and Gradle
+target/
+build/
+.gradle/
+
+# Java specific
+*.jar
+*.war
+*.ear
+
+# Other
+*.project
+*.classpath
+*.settings/
+
+# Python (if you're using IntelliJ with Python)
+*.pyc
+*.pyo
+__pycache__/
+
+# Node.js (if you're using IntelliJ with Node.js)
+node_modules/
+
+# Front-end build output
+dist/
+build/
+
+# General
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Docker
+*.dockerignore
+*.dockerfile
+
+# JetBrains-specific
+*.idea/**/workspace.xml
+*.idea/**/tasks.xml
+*.idea/**/shelf/
+*.idea/**/dictionaries/
+*.idea/**/dataSources/
+*.idea/**/dataSources.ids
+*.idea/**/dataSources.xml
+*.idea/**/dataSources.local.xml
+*.idea/**/libraries/
+*.idea/**/runConfigurations/
+*.idea/**/usage.statistics.xml
+*.idea/**/other.xml
+*.idea/**/vcs.xml
+*.idea/**/modules.xml
