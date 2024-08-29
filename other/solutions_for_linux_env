@@ -1,0 +1,21 @@
+
+#Fn keys not working on Ubuntu 22.04
+https://www.youtube.com/watch?v=NQk_M_Lkshw
+
+#Wireless headphones
+https://installati.one/install-blueman-ubuntu-22-04/
+
+#set default speaker 
+pactl list short sinks 
+pactl set-default-sink bluez_sink.AC_80_0A_6D_38_B4.handsfree_head_unit
+
+#set default microphone
+pactl list short sorces 
+pactl set-default-source bluez_source.AC_80_0A_6D_38_B4.handsfree_head_unit  
+
+#sound settings
+pavucontrol
+
+#kill specific port
+sudo netstat -plten |grep java
+kill -9 ${port_number}
