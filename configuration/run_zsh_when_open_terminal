@@ -1,0 +1,47 @@
+#instruction how to make zsh shell a default one, in case the old terminal appears after zsh instalation and configuration
+
+1. Set Zsh as Default Shell Using the Full Path
+Run the chsh command again, specifying the full path to Zsh:
+chsh -s /usr/bin/zsh
+You'll be prompted to enter your password. After doing this, log out of your session and log back in, or close and reopen your terminal.
+
+2. Verify the Change
+After logging back in or reopening the terminal, check again:
+echo $SHELL
+It should now show /usr/bin/zsh. If it still shows /bin/bash, proceed to the next steps.
+
+3. Manually Edit /etc/passwd
+If the chsh command doesn't work, manually edit the /etc/passwd file:
+Open /etc/passwd in a text editor with superuser privileges:
+sudo subl /etc/passwd
+Find the line corresponding to your username. It will look something like this:
+
+username:x:1000:1000:Your Name:/home/username:/bin/bash
+
+Change /bin/bash at the end of this line to /usr/bin/zsh, so it looks like this:
+
+username:x:1000:1000:Your Name:/home/username:/usr/bin/zsh
+
+Save the file and exit the editor (in nano, press CTRL + X, then Y to confirm, and Enter to save).
+
+4. Log Out and Log Back In
+Log out of your session completely and then log back in, or reboot your system. This ensures the shell change takes effect.
+
+5. Check if Zsh Starts Automatically
+After logging back in, open a terminal and check the shell again:
+echo $SHELL
+If everything was successful, it should now show /usr/bin/zsh.
+
+6. If the Shell Is Still Not Changing
+If you still see /bin/bash after trying all of the above, you might have a session-specific configuration file that forces Bash to start. Check your .bash_profile, .bashrc, and .profile files for any commands that might be explicitly launching Bash. Look for lines like:
+
+exec bash
+If found, comment them out by adding a # at the beginning of the line, then save the file and try again.
+
+7. Fallback Method (Auto-switch to Zsh)
+As a fallback, you can force Zsh to start whenever a Bash session is opened by adding the following line at the end of your .bashrc or .bash_profile:
+exec zsh
+
+This won't technically change your default shell, but it will automatically start Zsh whenever you open a terminal.
+
+After following these steps, your terminal should be using Zsh by default.

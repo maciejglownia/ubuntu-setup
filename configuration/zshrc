@@ -1,0 +1,101 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+export PATH=$HOME/bin:/usr/local/bin:$PATH
+export SDKMAN_DIR=$HOME/.sdkman
+export ZSH_DIR=$HOME/.zsh
+
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+source "$ZSH_DIR/path/to/new/ohmyzsh/folder/oh-my-zsh.sh"
+source "$ZSH_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+source "$ZSH_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$ZSH_DIR/.zsh-nvm/zsh-nvm.plugin.zsh"
+
+
+source "$HOME/.profile"
+
+source /opt/idea
+
+[[ ! -f ~/.zsh/.p10k.zsh ]] || source ~/.zsh/.p10k.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+
+
+# git
+alias gpl="git pull"
+alias gps="git push"
+alias gst="git status"
+alias gbr="git branch"
+alias gck="git checkout -b"
+
+# accessing to files (mainly configs) -> f + some text
+alias fbrc="subl ~/.bashrc"
+alias fzrc="subl ~/.zshrc"
+alias fomz="subl ~/.oh-my-zsh"
+alias fprof="subl ~/.profile"
+alias fgit="subl ~/.gitconfig"
+
+# navigation to dirs -> d + some text
+alias dssh="cd ~/.ssh"
+
+# the simplest ones
+alias lk="ls -1" # displays all content in dir each in seperate line
+alias ls="exa"
+alias ll="exa -alh"
+alias tree="exa --tree"
+
+# getting system/device info
+alias laptopmodel="sudo dmidecode -t system | grep 'Product Name'"
+
+# running programs
+alias obs="~/.obsidan-1.5.8.appimage"
+
+plugins=( 
+   zsh-autosuggestions
+   zsh-syntax-highlighting
+   git
+)
+
+eval 
+    fuck () {
+            TF_PYTHONIOENCODING=$PYTHONIOENCODING;
+                export TF_SHELL=zsh;
+                export TF_ALIAS=fuck;
+            TF_SHELL_ALIASES=$(alias);
+                export TF_SHELL_ALIASES;
+            TF_HISTORY="$(fc -ln -10)";
+                export TF_HISTORY;
+                export PYTHONIOENCODING=utf-8;
+            TF_CMD=$(thefuck THEFUCK_ARGUMENT_PLACEHOLDER $@) && eval $TF_CMD;
+                unset TF_HISTORY;
+                export PYTHONIOENCODING=$TF_PYTHONIOENCODING;
+                test -n "$TF_CMD" && print -s $TF_CMD
+            }
+
+eval $(thefuck --alias)
+# Set up fzf key bindings and fuzzy completion
+eval "$(fzf --zsh)"
+
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+
+# For GCP sdk
+#source /home/{username}/google-cloud-sdk/path.zsh.inc
+#source /home/{username}/google-cloud-sdk/completion.zsh.inc
+
+bindkey ";5C" forward-word
+bindkey ";5D" backward-word
+setopt APPEND_HISTORY
+setopt SHARE_HISTORY
+HISTFILE=$HOME/.zhistory
+SAVEHIST=1000
+HISTSIZE=999
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt EXTENDED_HISTORY
+bindkey '\e[A' history-search-backward
+bindkey '\e[B' history-search-forward
