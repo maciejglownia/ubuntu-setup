@@ -1,10 +1,27 @@
-### Script to install all needed stuff when start using ubuntu os
+# ubuntu-setup
 
-This script contains many tools good to have installed at the begining when start using linux OS.
-All commands in this script has been tested on Ubuntu 22.04 LTS.
+### This project contains many useful solutions according to using Ubuntu operating system
 
-Feel free to grab it whole as it is or take these commands you currently need.
 
-If you have any conerns or recommendations or just want to talk do not hesitate to contact me, please: 
-E-mail:   maciej.k.glownia@gmail.com 
-Linkedin: https://linkedin.com/in/maciejglownia
+You can find here:
+- scripts
+- installation guides
+- shortcuts
+- configuration files
+- useful tools
+- tips
+- other
+
+### ubuntu-setup.sh
+ubuntu-setup script contains instructions to install many tools which are useful. 
+Good to have them installed at the beginning, when start using linux OS.
+Some commands in this script has been tested on Ubuntu [22.04 LTS](https://releases.ubuntu.com/jammy/) and some of them on the [24.04 LTS](https://releases.ubuntu.com/noble/).
+
+### Feel free to go around 
+If you found something interesting, just grab it whole as it is, or take these, what you currently need.
+
+
+### Let's connect
+You can find me here: 
+- [My website](https://maciejglownia.com/)
+- [Linkedin](https://linkedin.com/in/maciejglownia)
