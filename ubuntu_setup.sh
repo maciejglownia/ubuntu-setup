@@ -170,8 +170,7 @@ sudo ./FreeFileSync_13.7_Install.run
 log "freefilesync installed successfully."
 
 #install bat (better cat)
-sudo apt install bat
-log "bat installed successfully."
+sudo apt install bat -y
 #the executable may be installed as batcat instead of bat (due to a name clash with another package)
 mkdir -p ~/.local/bin
 ln -s /usr/bin/batcat ~/.local/bin/bat
@@ -188,3 +187,42 @@ log "thefuck installed successfully."
 git config --global user.email "maciej.k.glownia@gmail.com"
 git config --global user.name "Maciej Głownia"
 log "user email and name has been set in .gitconfig."
+
+#install midnight commander
+#You need to enable the universe repository
+sudo add-apt-repository universe
+#then install mc
+sudo apt install mc
+
+#install zsh + oh-my-zsh + powerlevel10k
+sudo apt-get install zsh
+log "zsh installed successfully."
+#install oh-my-zsh
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+#install powerlevel10k
+git clone https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/
+#replace default zsh theme (robbyrussel) to powerlevel10k in .zshrc file
+sed -i 's/^ZSH_THEME=.*/ZSH_THEME="powerlevel10k\/powerlevel10k"/' ~/.zshrc
+#apply changes
+source ~/.zshrc
+log "follow the instruction to setup your shell"
+echo -----------------------------------------
+echo "| this is an example of setup I like: |"
+echo -----------------------------------------
+echo "answer first a few questions, if a sign is displaying what is described"
+echo "Rainbow"
+echo "ASCII"
+echo "24 hours"
+echo "One line"
+echo "Compact"
+echo "Concise"
+echo "Enable Transient Prompt - no"
+echo "Instant Prompt Mode - (1) Verbose (recommended)"
+echo "Apply changes - (y) Yes (recommended)"
+echo "enjoy!"
+
+#install fzf
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+#Set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
