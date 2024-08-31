@@ -63,6 +63,20 @@ sdk install groovy
 log "groovy LTS version installed successfully."
 groovy --version
 
+#install golang
+wget https://golang.org/dl/go1.13.4.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.13.4.linux-amd64.tar.gz
+
+#install golang version 1.13.4
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+source ~/.zshrc
+log "golang 1.13.4 version installed successfully."
+#clean up installer
+rm go1.13.4.linux-amd64.tar.gz
+log "go1.13.4.linux-amd64.tar.gz removed."
+
 #intall node version manager (nvm)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 log "nvm installed successfully."
@@ -96,11 +110,11 @@ sudo apt update
 curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/ms-vscode-keyring.gpg
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/ms-vscode-keyring.gpg] https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
 sudo apt update
-sudo apt install code
+sudo apt install code -y
 log "vs code installed successfully."
 
 #install ack - searching tool, like grep
-sudo apt install ack
+sudo apt install ack -y
 log "ack installed successfully."
 
 #install xdotool
@@ -116,8 +130,13 @@ sudo apt-get install -y arp-scan
 log "arp-scan installed successfully."
 
 #install nmap => sudo nmap -sn 192.168.1.0/24
-sudo apt-get install nmap
+sudo apt-get install nmap -y
 log "nmap installed successfully."
+
+#install blueman - bluetooth manager
+sudo apt install blueman -y
+sudo apt install bluez bluez-obexd -y
+log "blueman installed successfully."
 
 #install pavucontrol
 sudo apt install pavucontrol -y
@@ -158,6 +177,15 @@ sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub
 sudo flatpak install flathub com.github.eneshecan.WhatsAppForLinux -y
 flatpak run com.github.eneshecan.WhatsAppForLinux
 log "whats app for linux installed successfully."
+
+#install postman // to run type => flatpak run com.getpostman.Postman 
+sudo apt install flatpak
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak install flathub com.getpostman.Postman
+log "flatpack installed successfully."
+#remover
+#flatpak uninstall flathub com.getpostman.Postman
+
 
 #install flameshot - great tool to screenshots
 sudo apt install flameshot
@@ -226,3 +254,29 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 #Set up fzf key bindings and fuzzy completion
 source <(fzf --zsh)
+
+#instal zsh-autosuggesions
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+log "zsh-autosuggestions cloned into: /.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+#Add the plugin to the list of plugins for Oh My Zsh to load (inside ~/.zshrc):
+#plugins=( 
+#    # other plugins...
+#    zsh-autosuggestions
+#)
+
+#install insomnia
+sudo apt update
+sudo apt install insomnia
+wget "https://updates.insomnia.rest/downloads/ubuntu/latest?&app=com.insomnia.app&source=website" -O insomnia.deb
+sudo dpkg -i insomnia.deb
+
+#install slack
+sudo apt update && sudo apt upgrade -y
+wget https://downloads.slack-edge.com/releases/linux/4.31.155/prod/x64/slack-desktop-4.31.155-amd64.deb
+sudo apt install ./slack-desktop-4.31.155-amd64.deb 
+
+#ADDITIONAL
+
+#install terminator
+#sudo apt update
+#sudo apt install terminator -y
