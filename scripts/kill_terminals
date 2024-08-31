@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Terminal emulators to consider
+terminals=("gnome-terminal" "xterm" "konsole" "terminator" "lxterminal" "mate-terminal")
+
+# Function to kill processes by name
+kill_processes() {
+    local name=$1
+    echo "Killing processes for: $name"
+    pkill "$name" 2>/dev/null
+}
+
+# Iterate over the list of terminal emulators
+for term in "${terminals[@]}"; do
+    kill_processes "$term"
+done
+
+# Additional step: force kill any remaining terminal processes
+echo "Force killing remaining terminal processes..."
+pkill -9 -f "gnome-terminal|xterm|konsole|terminator|lxterminal|mate-terminal" 2>/dev/null
+
+echo "All terminal windows have been closed."

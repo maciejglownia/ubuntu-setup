@@ -1,0 +1,214 @@
+#!/bin/bash
+
+while true; do
+  echo "What would you like to do? Please choose an option:"
+  echo "1. Open current folder on GUI"
+  echo "2. Choose a file to open it in a text editor"
+  echo "3. Open a specific folder on GUI or move to destination in the terminal"
+  echo "4. Show zip files in the folder"
+  echo "0. Exit"
+  read -p "Enter your choice: " choice
+
+  case $choice in
+    1)
+      currentDir=$(pwd)
+      if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        # Linux
+        xdg-open "$currentDir"
+      elif [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        open "$currentDir"
+      elif [[ "$OSTYPE" == "cygwin" || "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+        # Windows
+        explorer "$currentDir"
+      else
+        echo "Unsupported operating system."
+      fi
+      ;;
+    2)
+      while true; do
+        files=()
+        for file in *; do
+          if [[ -f "$file" ]]; then
+            files+=("$file")
+          fi
+        done
+
+        if [[ ${#files[@]} -eq 0 ]]; then
+          echo "No files available in the current folder."
+          break
+        fi
+
+        echo "Available files in current folder (\"<\" to move back):"
+        for i in "${!files[@]}"; do
+          echo "$((i + 1)). ${files[$i]}"
+        done
+        read -p "Enter the number of the file you want to open: " fileChoice
+
+        if [[ "$fileChoice" == "<" ]]; then
+          break
+        elif (( fileChoice > 0 && fileChoice <= ${#files[@]} )); then
+          fileToOpen="${files[$((fileChoice - 1))]}"
+          while true; do
+            echo "Which text editor would you like to use? (\"<\" to move back)"
+            echo "1. Vim"
+            echo "2. Vi"
+            echo "3. Sublime Text (default)"
+            echo "4. Text editor"
+            read -p "Enter your choice: " editorChoice
+
+            if [[ "$editorChoice" == "<" ]]; then
+              break
+            fi
+
+            case $editorChoice in
+              1)
+                vim "$fileToOpen"
+                break
+                ;;
+              2)
+                vi "$fileToOpen"
+                break
+                ;;
+              3|'')
+                subl "$fileToOpen"
+                break
+                ;;
+              4)
+                xdg-open "$fileToOpen"
+                break
+                ;;
+              *)
+                echo "Invalid option. Opening with Sublime Text by default."
+                subl "$fileToOpen"
+                break
+                ;;
+            esac
+          done
+        else
+          echo "Invalid file number."
+        fi
+      done
+      ;;
+    3)
+      while true; do
+        folders=()
+        for folder in *; do
+          if [[ -d "$folder" ]]; then
+            folders+=("$folder")
+          fi
+        done
+
+        if [[ ${#folders[@]} -eq 0 ]]; then
+          echo "No folders available in the current folder."
+          break
+        fi
+
+        echo "Available folders in current folder (\"<\" to move back):"
+        for i in "${!folders[@]}"; do
+          echo "$((i + 1)). ${folders[$i]}"
+        done
+        read -p "Enter the number of the folder you want to open or move to: " folderChoice
+
+        if [[ "$folderChoice" == "<" ]]; then
+          break
+        elif (( folderChoice > 0 && folderChoice <= ${#folders[@]} )); then
+          folderToOpen="${folders[$((folderChoice - 1))]}"
+          while true; do
+            echo "What would you like to do with this folder? (\"<\" to move back)"
+            echo "1. Open in GUI"
+            echo "2. Move to this folder in terminal"
+            read -p "Enter your choice: " actionChoice
+
+            if [[ "$actionChoice" == "<" ]]; then
+              break
+            fi
+
+            case $actionChoice in
+              1)
+                if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+                  # Linux
+                  xdg-open "$folderToOpen"
+                elif [[ "$OSTYPE" == "darwin"* ]]; then
+                  # macOS
+                  open "$folderToOpen"
+                elif [[ "$OSTYPE" == "cygwin" || "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+                  # Windows
+                  explorer "$folderToOpen"
+                else
+                  echo "Unsupported operating system."
+                fi
+                break
+                ;;
+              2)
+                cd "$folderToOpen"
+                echo "Moved to $(pwd)"
+                break
+                ;;
+              *)
+                echo "Invalid option."
+                ;;
+            esac
+          done
+        else
+          echo "Invalid folder number."
+        fi
+      done
+      ;;
+    4)
+      while true; do
+        zipFiles=()
+        for file in *; do
+          if [[ -f "$file" && "$file" == *.zip ]]; then
+            zipFiles+=("$file")
+          fi
+        done
+
+        if [[ ${#zipFiles[@]} -eq 0 ]]; then
+          echo "No zip files available in the current folder."
+          break
+        fi
+
+        echo "Available zip files in current folder (\"<\" to move back):"
+        for i in "${!zipFiles[@]}"; do
+          echo "$((i + 1)). ${zipFiles[$i]}"
+        done
+        read -p "Enter the number of the zip file you want to extract: " zipChoice
+
+        if [[ "$zipChoice" == "<" ]]; then
+          break
+        elif (( zipChoice > 0 && zipChoice <= ${#zipFiles[@]} )); then
+          selectedZipFile="${zipFiles[$((zipChoice - 1))]}"
+          while true; do
+            read -p "Would you like to extract \"$selectedZipFile\"? (yes/no): " extractChoice
+            case $extractChoice in
+              yes)
+                unzip "$selectedZipFile"
+                echo "File extracted successfully."
+                break
+                ;;
+              no)
+                echo "Exiting without extracting."
+                break
+                ;;
+              *)
+                echo "Invalid choice. Please enter 'yes' or 'no'."
+                ;;
+            esac
+          done
+        else
+          echo "Invalid zip file number."
+        fi
+      done
+      ;;
+    0)
+      echo "Exiting..."
+      exit 0
+      ;;
+    *)
+      echo "Invalid option. Please try again."
+      ;;
+  esac
+done
+
+         
