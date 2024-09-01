@@ -183,9 +183,6 @@ sudo apt install flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak install flathub com.getpostman.Postman
 log "flatpack installed successfully."
-#remover
-#flatpak uninstall flathub com.getpostman.Postman
-
 
 #install flameshot - great tool to screenshots
 sudo apt install flameshot
@@ -270,13 +267,59 @@ sudo apt install insomnia
 wget "https://updates.insomnia.rest/downloads/ubuntu/latest?&app=com.insomnia.app&source=website" -O insomnia.deb
 sudo dpkg -i insomnia.deb
 
+
 #install slack
 sudo apt update && sudo apt upgrade -y
 wget https://downloads.slack-edge.com/releases/linux/4.31.155/prod/x64/slack-desktop-4.31.155-amd64.deb
 sudo apt install ./slack-desktop-4.31.155-amd64.deb 
 
+#install docker
+#make sure any conflicting packages not exist
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+log "docker installed successfully"
+#test docker
+log "docker testing..."
+sudo docker run hello-world
+
+#install tableplus - modern, native, and friendly GUI tool for relational databases: MySQL, PostgreSQL, SQLite & more
+# Add TablePlus gpg key
+wget -qO - https://deb.tableplus.com/apt.tableplus.com.gpg.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/tableplus-archive.gpg > /dev/null
+# Add TablePlus repo
+sudo add-apt-repository "deb [arch=amd64] https://deb.tableplus.com/debian/24 tableplus main"
+# Install
+sudo apt update
+sudo apt install tableplus -y
+log "tableplus installed successfully"
+
+#install golang-migrate - https://github.com/golang-migrate/migrate/tree/master/cmd/migrate
+git clone https://github.com/golang-migrate/migrate.git
+cd migrate
+make build
+mv migrate /usr/bin
+log "golang-migrate installed successfully"
+migrate -version
+
+"----------------------------------------------------------------------"
 #ADDITIONAL
 
 #install terminator
 #sudo apt update
 #sudo apt install terminator -y
+
+#REMOVERS
+#sudo apt autoremove --purge insomnia
+#flatpak uninstall flathub com.getpostman.Postman
