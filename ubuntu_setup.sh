@@ -313,7 +313,31 @@ mv migrate /usr/bin
 log "golang-migrate installed successfully"
 migrate -version
 
+#install sqlc for db operations
+go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+log "sqlc installed successfully"
+sqlc version
 "----------------------------------------------------------------------"
+
+#HALF-MANUALLY
+#install mongo-db shell
+#get needed version:
+# https://www.mongodb.com/try/download/shell
+sudo dpkg -i mongodb-mongosh_2.3.0_amd64.deb
+log "mongo db shell installed successfully"
+mongosh -version
+
+#mongo export DB tools
+# https://www.mongodb.com/try/download/database-tools
+sudo dpkg -i mongodb-database-tools-ubuntu2204-x86_64-100.10.0.deb
+log "mongo db tools installed successfully"
+
+#mongo do compass (GUI)
+# https://www.mongodb.com/try/download/compass
+sudo dpkg -i mongodb-compass_1.43.6_amd64.deb
+
+
+
 #ADDITIONAL
 
 #install terminator
