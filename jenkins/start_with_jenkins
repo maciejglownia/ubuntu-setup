@@ -1,0 +1,57 @@
+### Docker Installation
+
+1. install jenkins using docker (assuming docker desktop is already installed - if not check below)
+2. clone repo to your local machine -> https://github.com/vdespa/install-jenkins-docker
+3. Open a terminal window in the same directory where the Dockerfile from this repository is located. Build the Jenkins Docker image:
+docker build -t my-jenkins .
+4. Start Jenkins:
+docker compose up -d
+5. Open Jenkins by going to: http://localhost:8080/ and finish the installation process.
+6. If you wish to stop Jenkins and get back to it later, run:
+docker compose down
+7. If you wish to start Jenkins again later, just run the same command from Step 3.
+
+### Removing Jenkins
+Once you are done playing with Jenkins maybe it is time to clean things up.
+
+Run the following command to terminate Jenkins and to remove all volumes and images used:
+docker compose down --volumes --rmi all
+
+### Docker desktop installation on Ubuntu
+
+###### install docker desktop
+
+make sure any conflicting packages not exist
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+###### add the repository to Apt sources:
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+log "docker installed successfully"
+
+test docker
+log "docker testing..."
+sudo docker run hello-world
+
+### Ubuntu 24.04 LTS issue
+
+NOTE: The latest Ubuntu 24.04 LTS is not yet supported.
+Docker Desktop will fail to start.
+Due to a change in how the latest Ubuntu release restricts
+the unprivileged namespaces, needs to be run at least once before you start
+
+first:
+sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+then:
+systemctl --user start docker-desktop
