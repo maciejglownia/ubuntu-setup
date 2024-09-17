@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Function to generate password
+generate_password() {
+    local password_length=$1
+    local include_special=$2
+    local chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    local password_type="letters and numbers"
+
+    # If user chooses to include special characters, append them to chars
+    if [[ $include_special == "Y" || $include_special == "y" || $include_special == "" ]]; then
+        chars="$chars*!@#$%^&*"
+        password_type="letters, numbers, and special characters"
+    fi
+
+    # Generate the password
+    password=$(cat /dev/urandom | tr -dc "$chars" | fold -w "$password_length" | head -n 1)
+
+    # Mask the password with asterisks
+    masked_password=$(echo "$password" | sed 's/./*/g')
+
+    echo "Your generated password is: $masked_password"
+    echo "Password created with $password_type."
+    echo "Password length: $password_length characters."
+
+    # Copy to clipboard (xclip for Linux, pbcopy for macOS)
+    if command -v xclip &> /dev/null; then
+        echo -n "$password" | xclip -selection clipboard
+        echo "Password copied to clipboard!"
+    elif command -v pbcopy &> /dev/null; then
+        echo -n "$password" | pbcopy
+        echo "Password copied to clipboard!"
+    else
+        echo "Clipboard utility not found! Please install xclip (Linux) or pbcopy (macOS) to use clipboard functionality."
+    fi
+}
+
+# Step 1: Ask for the password length
+while true; do
+    read -p "Enter the length of the password (6-20): " password_length
+    if [[ $password_length =~ ^[6-9]$|^1[0-9]$|^20$ ]]; then
+        break
+    else
+        echo "Please enter a valid number between 6 and 20."
+    fi
+done
+
+# Step 2: Ask if the user wants special characters
+read -p "Should the password include special characters? (Y/n): " include_special
+
+# Step 3: Generate and display the password
+generate_password $password_length $include_special
