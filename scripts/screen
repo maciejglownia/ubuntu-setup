@@ -1,0 +1,107 @@
+#!/bin/bash
+
+function set_screen_blank() {
+  echo "Choose Screen Blank Time:"
+  echo "1 - 1 minute"
+  echo "2 - 2 minutes"
+  echo "3 - 5 minutes"
+  echo "4 - 10 minutes"
+  echo "5 - 15 minutes"
+  echo "6 - 30 minutes"
+  echo "7 - Never"
+  echo "0 - Exit"
+
+  read -p "Select an option: " blank_option
+
+  case $blank_option in
+    1) time=60 ;;
+    2) time=120 ;;
+    3) time=300 ;;
+    4) time=600 ;;
+    5) time=900 ;;
+    6) time=1800 ;;
+    7) time=0 ;;  # This disables screen blanking (Never)
+    0) echo "Exiting..." ; exit ;;
+    *) echo "Invalid option" ; exit ;;
+  esac
+
+  # Set screen blank time using gsettings (for GNOME)
+  gsettings set org.gnome.desktop.session idle-delay $time
+  if [ "$time" -eq 0 ]; then
+    echo "Screen blank time set to Never."
+  else
+    echo "Screen blank time set to $((time / 60)) minutes."
+  fi
+}
+
+function set_automatic_suspend() {
+  echo "Choose next move:"
+  echo "1 - On battery power"
+  echo "2 - Plugged in"
+  echo "0 - Exit"
+
+  read -p "Select an option: " suspend_option
+
+  if [ "$suspend_option" -eq 0 ]; then
+    echo "Exiting..."
+    exit
+  fi
+
+  echo "Choose suspend delay:"
+  echo "1 - 5 minutes"
+  echo "2 - 10 minutes"
+  echo "3 - 15 minutes"
+  echo "4 - 30 minutes"
+  echo "5 - Never"
+  echo "0 - Exit"
+
+  read -p "Select suspend delay: " delay_option
+
+  case $delay_option in
+    1) delay=300 ;;
+    2) delay=600 ;;
+    3) delay=900 ;;
+    4) delay=1800 ;;
+    5) delay=0 ;;  # Disable suspend (Never)
+    0) echo "Exiting..." ; exit ;;
+    *) echo "Invalid option" ; exit ;;
+  esac
+
+  if [ "$suspend_option" -eq 1 ]; then
+    gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout $delay
+    if [ "$delay" -eq 0 ]; then
+      echo "Suspend on battery set to Never."
+    else
+      echo "Suspend on battery set to $((delay / 60)) minutes."
+    fi
+  elif [ "$suspend_option" -eq 2 ]; then
+    gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout $delay
+    if [ "$delay" -eq 0 ]; then
+      echo "Suspend when plugged in set to Never."
+    else
+      echo "Suspend when plugged in set to $((delay / 60)) minutes."
+    fi
+  else
+    echo "Invalid option" ; exit
+  fi
+}
+
+function main_menu() {
+  while true; do
+    echo "Choose an option:"
+    echo "1 - Screen Blank"
+    echo "2 - Automatic Suspend"
+    echo "0 - Exit"
+
+    read -p "Select an option: " option
+
+    case $option in
+      1) set_screen_blank ;;
+      2) set_automatic_suspend ;;
+      0) echo "Exiting..." ; exit ;;
+      *) echo "Invalid option" ;;
+    esac
+  done
+}
+
+main_menu
