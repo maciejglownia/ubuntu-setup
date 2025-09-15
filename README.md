@@ -23,5 +23,4 @@ If you found something interesting, just grab it whole as it is, or take these, 
 
 ### Let's connect
 You can find me here: 
-- [My website](https://maciejglownia.com/)
 - [Linkedin](https://linkedin.com/in/maciejglownia)
